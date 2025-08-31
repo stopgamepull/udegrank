@@ -1,0 +1,1677 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Degens Scoreboard (CDS)</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        background-color: #f2f2f2;
+        color: #333;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        background: linear-gradient(135deg, #002d72, #004080);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        border-bottom: 5px solid #ffcc00;
+      }
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+      }
+      header h1 {
+        font-size: 48px;
+        text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        margin-bottom: 5px;
+      }
+      header h2 {
+        font-size: 24px;
+        color: #cccccc;
+        font-style: italic;
+      }
+      .logo {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 80px;
+      }
+      nav {
+        background-color: #004080;
+        padding: 10px 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .nav-links {
+        display: flex;
+        list-style: none;
+      }
+      .nav-links li {
+        margin-left: 20px;
+      }
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 5px;
+        transition: all 0.3s;
+      }
+      .nav-links a:hover {
+        background-color: #ffcc00;
+        color: #002d72;
+      }
+      .nav-links a.active {
+        background-color: #ffcc00;
+        color: #002d72;
+      }
+      main {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        padding: 20px;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      section {
+        flex: 3;
+        background-color: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      aside {
+        flex: 1;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-height: 80vh;
+        overflow-y: auto;
+        position: sticky;
+        top: 20px;
+      }
+      h3 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #004080;
+        border-bottom: 2px solid #ffcc00;
+        padding-bottom: 5px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #004080;
+        color: white;
+        position: sticky;
+        top: 0;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      tr:hover {
+        background-color: #f0f0f0;
+      }
+      ul {
+        list-style: none;
+      }
+      li {
+        margin-bottom: 15px;
+      }
+      footer {
+        margin-top: auto;
+        background: linear-gradient(135deg, #002d72, #004080);
+        color: white;
+        text-align: center;
+        padding: 15px;
+        border-top: 5px solid #ffcc00;
+      }
+      .news-item-title {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .news-item-link {
+        color: #004080;
+        text-decoration: none;
+        display: block;
+        padding: 8px;
+        border-radius: 5px;
+        transition: all 0.3s;
+      }
+      .news-item-link:hover {
+        background-color: #f0f7ff;
+      }
+      .news-item-source {
+        font-size: 12px;
+        color: #666;
+        display: block;
+      }
+      .news-item-date {
+        font-size: 12px;
+        color: #999;
+        display: block;
+        margin-top: 3px;
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 20px;
+      }
+      .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        background-color: #f2f2f2;
+        border: 1px solid #ddd;
+        border-bottom: none;
+        border-radius: 5px 5px 0 0;
+        margin-right: 5px;
+        position: relative;
+      }
+      .tab.active {
+        background-color: white;
+        border-bottom: 1px solid white;
+        margin-bottom: -1px;
+        font-weight: bold;
+        color: #004080;
+      }
+      .tab.locked {
+        opacity: 0.7;
+      }
+      .tab.locked::after {
+        content: "🔒";
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        font-size: 12px;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-content {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+      .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+      }
+      .close-modal:hover {
+        color: #000;
+      }
+      .btn {
+        padding: 8px 15px;
+        background-color: #004080;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .btn:hover {
+        background-color: #002d72;
+      }
+      .btn-yellow {
+        background-color: #ffcc00;
+        color: #002d72;
+      }
+      .btn-yellow:hover {
+        background-color: #e6b800;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+      .stat-card {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #004080;
+        margin: 10px 0;
+      }
+      .stat-label {
+        font-size: 14px;
+        color: #666;
+      }
+      .token-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      .token-icon {
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+        border-radius: 50%;
+      }
+      .token-name {
+        font-weight: bold;
+      }
+      .token-price {
+        margin-left: auto;
+        font-weight: bold;
+        color: #004080;
+      }
+      .price-up {
+        color: #4caf50;
+      }
+      .price-down {
+        color: #f44336;
+      }
+      .price-neutral {
+        color: #ffc107;
+      }
+      .locked-content {
+        text-align: center;
+        padding: 50px 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        margin-top: 20px;
+      }
+      .locked-icon {
+        font-size: 48px;
+        margin-bottom: 20px;
+      }
+      .unlock-btn {
+        margin-top: 20px;
+      }
+      .treasure-chest {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 20px;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23004080"><path d="M5 4h14v3h-14v-3zm0 5h14v10h-14v-10zm2 2v6h10v-6h-10z"/></svg>');
+        background-size: contain;
+        background-repeat: no-repeat;
+        position: relative;
+      }
+      .treasure-chest::after {
+        content: "🔒";
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        font-size: 24px;
+      }
+      .about-content {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .about-card {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .about-card h4 {
+        color: #004080;
+        margin-bottom: 10px;
+        font-size: 20px;
+      }
+      .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+      .team-member {
+        text-align: center;
+      }
+      .team-member img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+        border: 3px solid #ffcc00;
+      }
+      @media (max-width: 768px) {
+        main {
+          flex-direction: column;
+        }
+        aside {
+          max-height: none;
+          position: static;
+        }
+        .nav-container {
+          flex-direction: column;
+        }
+        .nav-links {
+          margin-top: 10px;
+          width: 100%;
+          justify-content: space-around;
+        }
+        .nav-links li {
+          margin-left: 0;
+        }
+        .logo {
+          position: static;
+          transform: none;
+          margin-bottom: 10px;
+        }
+        header h1 {
+          font-size: 36px;
+        }
+        header h2 {
+          font-size: 18px;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+        .team-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .lik {
+        width: 50px;
+        height: 50px;
+        margin-right: 20px;
+      }
+
+      .lik img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <img src="images/pngwing.png" alt="GPS Logo" class="logo">
+        <h1>Crypto Degens Scoreboard</h1>
+        <h2>Official Crypto Degens Scoreboard</h2>
+      </div>
+    </header>
+
+    <nav>
+      <div class="nav-container">
+        <div class="nav-links">
+          <li>
+            <a href="#" class="nav-link active" data-tab="leaderboard">Leaderboard</a>
+          </li>
+          <li><a href="#" class="nav-link" data-tab="market">Market</a></li>
+          <li>
+            <a href="#" class="nav-link" data-tab="research">Research</a>
+          </li>
+          <li style="display: none">
+            <a href="#" class="nav-link" data-tab="memes">Memes</a>
+          </li>
+          <li><a href="#" class="nav-link" data-tab="about">About GPS</a></li>
+        </div>
+        <div style="display: flex">
+          <a class="nav-link lik" href="x.com"> 
+            <img src="images/icons8.png" alt="">
+          </a>
+          <button class="btn btn-yellow" id="connect-wallet">
+            Connect Wallet
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <section>
+        <div class="tabs">
+          <div class="tab active" data-tab="leaderboard">Top Traders</div>
+          <div class="tab" data-tab="whales">Whales</div>
+          <div class="tab" data-tab="newbies">Newbies</div>
+          <div class="tab" data-tab="rekt">Rekt List</div>
+        </div>
+
+        <div id="leaderboard" class="tab-content active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total Degens</div>
+              <div class="stat-value">42,069</div>
+              <div class="stat-label">+69 today</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Total Profit</div>
+              <div class="stat-value">$420M</div>
+              <div class="stat-label">+3.2% today</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Total Losses</div>
+              <div class="stat-value">$690M</div>
+              <div class="stat-label">-5.5% today</div>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>DEGEN</th>
+                <th>PROFIT</th>
+                <th>CHAIN</th>
+                <th>STRATEGY</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-data">
+              <!-- JS will inject data -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="whales" class="tab-content">
+          <h3>Crypto Whales</h3>
+          <p>
+            These giants move markets with a single trade. Be careful - they can
+            crush you like a shrimp.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>WHALE</th>
+                <th>ASSETS</th>
+                <th>INFLUENCE</th>
+                <th>LAST TRADE</th>
+              </tr>
+            </thead>
+            <tbody id="whales-data">
+              <!-- JS will inject data -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="newbies" class="tab-content">
+          <h3>Newbies of the Month</h3>
+          <p>
+            Fresh blood in our degenerate community. Some will become legends,
+            others - cautionary tales.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>NEWBIE</th>
+                <th>PROFIT</th>
+                <th>SUCCESS RATE</th>
+                <th>STYLE</th>
+              </tr>
+            </thead>
+            <tbody id="newbies-data">
+              <!-- JS will inject data -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="rekt" class="tab-content">
+          <h3>Rekt List</h3>
+          <p>
+            Here are the most epic fails of the month. Learn from their
+            mistakes... or just laugh at them.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>VICTIM</th>
+                <th>LOSSES</th>
+                <th>REASON</th>
+                <th>LESSON</th>
+              </tr>
+            </thead>
+            <tbody id="rekt-data">
+              <!-- JS will inject data -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="market" class="tab-content">
+          <div class="locked-content">
+            <div class="treasure-chest"></div>
+            <h3>Premium Market Data</h3>
+            <p>
+              Unlock exclusive market insights and analytics by connecting your
+              wallet
+            </p>
+            <button class="btn btn-yellow unlock-btn" id="unlock-market">
+              Unlock Market Data 🔓
+            </button>
+          </div>
+        </div>
+
+        <div id="research" class="tab-content">
+          <div class="locked-content">
+            <div class="treasure-chest"></div>
+            <h3>Advanced Research Tools</h3>
+            <p>
+              Access our proprietary research tools and reports by connecting
+              your wallet
+            </p>
+            <button class="btn btn-yellow unlock-btn" id="unlock-research">
+              Unlock Research Tools 🔓
+            </button>
+          </div>
+        </div>
+
+        <div id="memes" class="tab-content">
+          <h3>Degenerate Memes</h3>
+          <div style="
+              display: grid;
+              grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+              gap: 20px;
+              margin-top: 20px;
+            ">
+            <img src="images/5z3z9z3z3z3z.jpg" alt="Crypto Meme" style="width: 100%; border-radius: 8px">
+            <img src="images/9z8z7z6z5z4z.jpg" alt="Crypto Meme" style="width: 100%; border-radius: 8px">
+            <img src="images/2z1z4z3z6z5z.jpg" alt="Crypto Meme" style="width: 100%; border-radius: 8px">
+            <img src="images/7z6z5z4z8z7z.jpg" alt="Crypto Meme" style="width: 100%; border-radius: 8px">
+            <img src="images/3z2z1z9z0z8z.jpg" alt="Crypto Meme" style="width: 100%; border-radius: 8px">
+            <img src="images/4z3z2z1z2z9z.jpg" alt="Crypto Meme" style="width: 100%; border-radius: 8px">
+          </div>
+        </div>
+
+        <div id="about" class="tab-content">
+          <div class="about-content">
+            <div class="about-card">
+              <h4>About Crypto Degens Scoreboard</h4>
+              <p>
+                Welcome to the Crypto Degens Scoreboard (GPS), the premier ranking
+                platform for crypto degenerates. We track, analyze, and
+                celebrate the most regarded traders in the space.
+              </p>
+              <p>
+                Founded in 2021 by a group of degen traders who lost everything
+                in the Great Shitcoin Crash, GPS has grown to become the most
+                trusted source for identifying the best (and worst) traders in
+                crypto.
+              </p>
+            </div>
+
+            <div class="about-card">
+              <h4>Our Mission</h4>
+              <p>
+                To provide transparency in the opaque world of crypto trading
+                by:
+              </p>
+              <ul style="list-style-type: disc; padding-left: 20px">
+                <li>Tracking real trading performance</li>
+                <li>Identifying market movers and shakers</li>
+                <li>Highlighting both genius plays and spectacular fails</li>
+                <li>
+                  Creating a community where degenerates can learn from each
+                  other
+                </li>
+              </ul>
+            </div>
+
+            <div class="about-card">
+              <h4>How It Works</h4>
+              <p>
+                Our proprietary algorithm analyzes on-chain data, exchange APIs,
+                and social sentiment to:
+              </p>
+              <ol style="padding-left: 20px">
+                <li>Identify profitable trading patterns</li>
+                <li>Score traders based on risk-adjusted returns</li>
+                <li>Detect market manipulation</li>
+                <li>Predict future market movements</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside id="news">
+        <h3>Crypto News</h3>
+        <div class="token-info">
+          <img src="images/pngwing1.png" alt="BTC" class="token-icon">
+          <span class="token-name">BTC</span>
+          <span class="token-price price-up">$83,463 <small>(+4.2%)</small></span>
+        </div>
+        <div class="token-info">
+          <img src="images/pngwing2.png" alt="ETH" class="token-icon">
+          <span class="token-name">ETH</span>
+          <span class="token-price price-up">$1,583 <small>(+2.1%)</small></span>
+        </div>
+        <div class="token-info">
+          <img src="images/pngwing3.png" alt="DOGE" class="token-icon">
+          <span class="token-name">DOGE</span>
+          <span class="token-price price-down">$0.16 <small>(-5.7%)</small></span>
+        </div>
+        <div class="token-info">
+          <img src="images/pngwing4.png" alt="SOL" class="token-icon">
+          <span class="token-name">SOL</span>
+          <span class="token-price price-neutral">$126,4 <small>(0.3%)</small></span>
+        </div>
+
+        <ul id="news-list">
+          <!-- JS will inject news -->
+        </ul>
+        <button class="btn" style="width: 100%; margin-top: 10px" id="load-more-news">
+          More News
+        </button>
+      </aside>
+    </main>
+
+    <!-- Modal Windows -->
+    <div class="modal" id="trader-modal">
+      <div class="modal-content">
+        <span class="close-modal">�</span>
+        <h3 id="modal-trader-name">Trader Name</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Profit</div>
+            <div class="stat-value" id="modal-total-profit">$0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Win Rate</div>
+            <div class="stat-value" id="modal-win-rate">0%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Max Drawdown</div>
+            <div class="stat-value" id="modal-drawdown">0%</div>
+          </div>
+        </div>
+        <h4>Recent Trades</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Token</th>
+              <th>Direction</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody id="modal-trades">
+            <!-- JS will inject data -->
+          </tbody>
+        </table>
+        <h4>Favorite Tokens</h4>
+        <div id="modal-favorite-tokens">
+          <!-- JS will inject data -->
+        </div>
+        <h4>Trading Style</h4>
+        <p id="modal-trading-style">Loading...</p>
+        <button class="btn btn-yellow" id="modal-follow-btn">
+          Follow Trader
+        </button>
+      </div>
+    </div>
+
+    <div class="modal" id="wallet-modal">
+      <div class="modal-content">
+        <span class="close-modal">�</span>
+        <h3>Connect Wallet</h3>
+        <p>Choose your wallet to connect to Crypto Degens Scoreboard:</p>
+        <div class="wallet-options">
+          <button class="btn" style="
+              width: 100%;
+              margin-bottom: 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            ">
+            <img src="https://metamask.io/images/metamask-logo.png" alt="MetaMask" style="height: 30px; margin-right: 10px">
+            MetaMask
+          </button>
+          <button class="btn" style="
+              width: 100%;
+              margin-bottom: 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            ">
+            <img src="https://trustwallet.com/assets/images/media/assets/logo.png" alt="Trust Wallet" style="height: 30px; margin-right: 10px">
+            Trust Wallet
+          </button>
+          <button class="btn" style="
+              width: 100%;
+              margin-bottom: 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            ">
+            <img src="https://walletconnect.org/_next/static/media/logo_mark.84dd8525.svg" alt="WalletConnect" style="height: 30px; margin-right: 10px">
+            WalletConnect
+          </button>
+        </div>
+        <p style="font-size: 12px; color: #666; text-align: center">
+          By connecting your wallet, you agree that we are not responsible for
+          your financial losses.
+        </p>
+      </div>
+    </div>
+
+    <div class="modal" id="unlock-modal">
+      <div class="modal-content">
+        <span class="close-modal">�</span>
+        <h3>Unlock Premium Features</h3>
+        <p>Connect your wallet to access:</p>
+        <ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 20px">
+          <li>Advanced market analytics</li>
+          <li>Proprietary research tools</li>
+          <li>Whale tracking dashboard</li>
+          <li>Early access to new features</li>
+        </ul>
+        <button class="btn btn-yellow" id="connect-to-unlock" style="width: 100%">
+          Connect Wallet to Unlock 🔓
+        </button>
+      </div>
+    </div>
+
+    <footer>
+      <p>
+        Crypto Degens Scoreboard - is not a financial institution and does not
+        provide investment advice
+      </p>
+      <p style="font-size: 12px; margin-top: 5px">
+        This is a satirical project. Don't take anything here seriously. DYOR.
+      </p>
+    </footer>
+
+    <script>
+      // Mock data for whales
+      const whales = [
+        {
+          username: "BitcoinWhale_1",
+          assets: "$420M",
+          influence: "High",
+          lastTrade: "Bought 500 BTC",
+        },
+        {
+          username: "EthereumGiant",
+          assets: "$350M",
+          influence: "Very High",
+          lastTrade: "Sold 20K ETH",
+        },
+        {
+          username: "SolanaMaster",
+          assets: "$180M",
+          influence: "Medium",
+          lastTrade: "Bought 1M SOL",
+        },
+        {
+          username: "AltcoinKing",
+          assets: "$120M",
+          influence: "High",
+          lastTrade: "Reallocated to alts",
+        },
+        {
+          username: "StablecoinBarron",
+          assets: "$90M",
+          influence: "Low",
+          lastTrade: "Converted to USDT",
+        },
+      ];
+
+      // Mock data for newbies
+      const newbies = [
+        {
+          username: "CryptoBaby",
+          profit: "$12,500",
+          successRate: "78%",
+          style: "Cautious",
+        },
+        {
+          username: "NoobGains",
+          profit: "$9,800",
+          successRate: "65%",
+          style: "Moderate",
+        },
+        {
+          username: "LuckyDegen",
+          profit: "$15,200",
+          successRate: "32%",
+          style: "Risky",
+        },
+        {
+          username: "PaperHands",
+          profit: "$5,400",
+          successRate: "85%",
+          style: "Conservative",
+        },
+        {
+          username: "FomoKid",
+          profit: "$18,900",
+          successRate: "25%",
+          style: "Aggressive",
+        },
+      ];
+
+      // Mock data for rekt list
+      const rektList = [
+        {
+          username: "LeverageLoser",
+          losses: "$250K",
+          reason: "100x on memecoin",
+          lesson: "Don't use 100x on memes",
+        },
+        {
+          username: "ScamVictim",
+          losses: "$180K",
+          reason: "Invested in scam ICO",
+          lesson: "DYOR before investing",
+        },
+        {
+          username: "WalletDrainer",
+          losses: "$500K",
+          reason: "Signed phishing contract",
+          lesson: "Check contracts",
+        },
+        {
+          username: "TaxEvader",
+          losses: "$1.2M",
+          reason: "Forgot about taxes",
+          lesson: "Pay your taxes, degen",
+        },
+        {
+          username: "PonziParticipant",
+          losses: "$750K",
+          reason: "Participated in Ponzi",
+          lesson: "If it sounds like Ponzi...",
+        },
+      ];
+
+      // Mock news data (emulating crypto news)
+      const newsArticles = [
+        {
+          title: "SEC sues another exchange - market in panic again",
+          url: "#",
+          source: "CryptoPanic",
+          date: "Apr 13, 2025",
+        },
+        {
+          title: "Bitcoin above $70,000 again - are bulls back?",
+          url: "#",
+          source: "GPS Analytics",
+          date: "Apr 13, 2025",
+        },
+        {
+          title: "Binance launches new Launchpad project with AI token",
+          url: "#",
+          source: "Binance Blog",
+          date: "Apr 12, 2025",
+        },
+        {
+          title:
+            "Senate discusses DAO regulation - is decentralization under threat?",
+          url: "#",
+          source: "DeFi Times",
+          date: "Apr 12, 2025",
+        },
+        {
+          title: "ETH 2.0 delayed: scaling issues still relevant",
+          url: "#",
+          source: "Ethereum News",
+          date: "Apr 11, 2025",
+        },
+        {
+          title: "New memecoin 'DegenCoin' up 1000% in a day",
+          url: "#",
+          source: "MemeWire",
+          date: "Apr 11, 2025",
+        },
+        {
+          title: "Major hack: $200M stolen from DeFi protocol",
+          url: "#",
+          source: "SecurityAlert",
+          date: "Apr 10, 2025",
+        },
+      ];
+
+      const fugitives = [
+        {
+          id: 1,
+          name: "Cented",
+          crime: "AJ6MGE",
+          photo: "1.png",
+          twitter: "https://x.com/Cented7",
+        },
+        {
+          id: 2,
+          name: "Euris",
+          crime: "AJ6MGE",
+          photo: "2.png",
+          twitter: "https://x.com/Euris_JT",
+        },
+        {
+          id: 3,
+          name: "Tim",
+          crime: "AJ6MGE",
+          photo: "3.png",
+          twitter: "https://x.com/timmpix1",
+        },
+        {
+          id: 4,
+          name: "Kadenox",
+          crime: "3pZ59Y",
+          photo: "4.png",
+          twitter: "https://x.com/kadenox",
+        },
+        {
+          id: 5,
+          name: "dv",
+          crime: "BCagck",
+          photo: "5.png",
+          twitter: "https://x.com/vibed333",
+        },
+        {
+          id: 6,
+          name: "Kreo",
+          crime: "BCnqsP",
+          photo: "6.png",
+          twitter: "https://x.com/kreo444",
+        },
+        {
+          id: 7,
+          name: "Casino",
+          crime: "8rvAsD",
+          photo: "7.png",
+          twitter: "https://x.com/casino616",
+        },
+        {
+          id: 8,
+          name: "Cented",
+          crime: "WANTED",
+          photo: "8.png",
+          twitter: "https://x.com/Cented7",
+        },
+        {
+          id: 9,
+          name: "Loopierr",
+          crime: "9yYya3",
+          photo: "9.png",
+          twitter: "https://x.com/Loopierr",
+        },
+        {
+          id: 10,
+          name: "Publix",
+          crime: "86AEJE",
+          photo: "10.png",
+          twitter: "https://x.com/Publix",
+        },
+        {
+          id: 11,
+          name: "Jijo",
+          crime: "4BdKax",
+          photo: "11.png",
+          twitter: "https://x.com/Jijo",
+        },
+        {
+          id: 12,
+          name: "Jidn",
+          crime: "3h65Mm",
+          photo: "12.png",
+          twitter: "https://x.com/Jidn",
+        },
+        {
+          id: 13,
+          name: "Classic",
+          crime: "DsqRyT",
+          photo: "13.png",
+          twitter: "https://x.com/Classic",
+        },
+        {
+          id: 14,
+          name: "West",
+          crime: "JDd3hy",
+          photo: "14.png",
+          twitter: "https://x.com/West",
+        },
+        {
+          id: 15,
+          name: "Pain",
+          crime: "HAN61K",
+          photo: "15.png",
+          twitter: "https://x.com/Pain",
+        },
+        {
+          id: 16,
+          name: "Tahi",
+          crime: "5x8tfr",
+          photo: "16.png",
+          twitter: "https://x.com/Tahi",
+        },
+        {
+          id: 17,
+          name: "Leens",
+          crime: "7iabBM",
+          photo: "17.png",
+          twitter: "https://x.com/Leens",
+        },
+        {
+          id: 18,
+          name: "Absol",
+          crime: "BXNiM7",
+          photo: "18.png",
+          twitter: "https://x.com/Absol",
+        },
+        {
+          id: 19,
+          name: "Danny",
+          crime: "EaVboa",
+          photo: "19.png",
+          twitter: "https://x.com/Danny",
+        },
+        {
+          id: 20,
+          name: "Henn100x",
+          crime: "FRbUNv",
+          photo: "20.png",
+          twitter: "https://x.com/Henn100x",
+        },
+        {
+          id: 21,
+          name: "ShockedJS",
+          crime: "6m5sW6",
+          photo: "21.png",
+          twitter: "https://x.com/ShockedJS",
+        },
+        {
+          id: 22,
+          name: "Cented",
+          crime: "6m5sW6",
+          photo: "22.png",
+          twitter: "https://x.com/Cented7",
+        },
+        {
+          id: 23,
+          name: "Chefin",
+          crime: "6Qs6jo",
+          photo: "23.png",
+          twitter: "https://x.com/Chefin",
+        },
+        {
+          id: 24,
+          name: "The Doc",
+          crime: "DYAn4X",
+          photo: "24.png",
+          twitter: "https://x.com/The_Doc",
+        },
+        {
+          id: 25,
+          name: "Cented",
+          crime: "WANTED",
+          photo: "25.png",
+          twitter: "https://x.com/Cented7",
+        },
+        {
+          id: 26,
+          name: "Assasin.eth",
+          crime: "6LChaY",
+          photo: "26.png",
+          twitter: "https://x.com/Assasin.eth",
+        },
+        {
+          id: 27,
+          name: "Cented",
+          crime: "WANTED",
+          photo: "27.png",
+          twitter: "https://x.com/Cented7",
+        },
+        {
+          id: 28,
+          name: "Mr. Frog",
+          crime: "4Ddrfi",
+          photo: "28.png",
+          twitter: "https://x.com/Mr. Frog",
+        },
+        {
+          id: 29,
+          name: "Trey",
+          crime: "831yhv",
+          photo: "29.png",
+          twitter: "https://x.com/Trey",
+        },
+        {
+          id: 30,
+          name: "Lynk",
+          crime: "DrHszs",
+          photo: "30.png",
+          twitter: "https://x.com/Lynk",
+        },
+        {
+          id: 31,
+          name: "Betman",
+          crime: "BoYHJo",
+          photo: "31.png",
+          twitter: "https://x.com/Betman",
+        },
+        {
+          id: 32,
+          name: "Jordan",
+          crime: "EAnB51",
+          photo: "32.png",
+          twitter: "https://x.com/Jordan",
+        },
+        {
+          id: 33,
+          name: "Value & Time",
+          crime: "3nvC8c",
+          photo: "33.png",
+          twitter: "https://x.com/Value & Time",
+        },
+        {
+          id: 34,
+          name: "Joji",
+          crime: "Otta",
+          photo: "34.png",
+          twitter: "https://x.com/Joji",
+        },
+        {
+          id: 35,
+          name: "Otta",
+          crime: "As7HjL",
+          photo: "35.png",
+          twitter: "https://x.com/Otta",
+        },
+        {
+          id: 36,
+          name: "Cented",
+          crime: "WANTED",
+          photo: "36.png",
+          twitter: "https://x.com/Cented7",
+        },
+        {
+          id: 37,
+          name: "Kev",
+          crime: "BTf4A2",
+          photo: "37.png",
+          twitter: "https://x.com/Kev",
+        },
+        {
+          id: 38,
+          name: "Sully",
+          crime: "Ebk5AT",
+          photo: "38.png",
+          twitter: "https://x.com/Sully",
+        },
+        {
+          id: 39,
+          name: "Insyder",
+          crime: "G3g1CK",
+          photo: "39.png",
+          twitter: "https://x.com/Insyder",
+        },
+        {
+          id: 40,
+          name: "Lynk",
+          crime: "DrHszs",
+          photo: "40.png",
+          twitter: "https://x.com/Lynk",
+        },
+        {
+          id: 41,
+          name: "Betman",
+          crime: "BoYHJo",
+          photo: "41.png",
+          twitter: "https://x.com/Betman",
+        },
+        {
+          id: 42,
+          name: "Jordan",
+          crime: "EAnB51",
+          photo: "42.png",
+          twitter: "https://x.com/Jordan",
+        },
+        {
+          id: 43,
+          name: "Value & Time",
+          crime: "3nvC8c",
+          photo: "1.png",
+          twitter: "https://x.com/Value & Time",
+        },
+        {
+          id: 44,
+          name: "Joji",
+          crime: "Otta",
+          photo: "44.png",
+          twitter: "https://x.com/Joji",
+        },
+        {
+          id: 45,
+          name: "Otta",
+          crime: "As7HjL",
+          photo: "45.png",
+          twitter: "https://x.com/Otta",
+        },
+        {
+          id: 46,
+          name: "Cented",
+          crime: "WANTED",
+          photo: "46.png",
+          twitter: "https://x.com/Cented7",
+        },
+        {
+          id: 47,
+          name: "Kev",
+          crime: "BTf4A2",
+          photo: "47.png",
+          twitter: "https://x.com/Kev",
+        },
+        {
+          id: 48,
+          name: "Sully",
+          crime: "Ebk5AT",
+          photo: "48.png",
+          twitter: "https://x.com/Sully",
+        },
+        {
+          id: 49,
+          name: "Insyder",
+          crime: "G3g1CK",
+          photo: "49.png",
+          twitter: "https://x.com/Insyder",
+        },
+        {
+          id: 50,
+          name: "0xWinged",
+          crime: "G3g1CK",
+          photo: "50.png",
+          twitter: "https://x.com/0xWinged",
+        },
+      ];
+
+      // DOM elements
+      const leaderboard = document.getElementById("leaderboard-data");
+      const whalesTable = document.getElementById("whales-data");
+      const newbiesTable = document.getElementById("newbies-data");
+      const rektTable = document.getElementById("rekt-data");
+      const newsList = document.getElementById("news-list");
+      const navLinks = document.querySelectorAll(".nav-link");
+      const tabs = document.querySelectorAll(".tab");
+      const tabContents = document.querySelectorAll(".tab-content");
+      const traderModal = document.getElementById("trader-modal");
+      const walletModal = document.getElementById("wallet-modal");
+      const unlockModal = document.getElementById("unlock-modal");
+      const closeModals = document.querySelectorAll(".close-modal");
+      const connectWalletBtn = document.getElementById("connect-wallet");
+      const loadMoreNewsBtn = document.getElementById("load-more-news");
+      const unlockMarketBtn = document.getElementById("unlock-market");
+      const unlockResearchBtn = document.getElementById("unlock-research");
+      const connectToUnlockBtn = document.getElementById("connect-to-unlock");
+
+      // Initialize data
+      function initData() {
+        // Leaderboard - using fugitives data
+        fugitives.forEach((fugitive, index) => {
+          // Generate random profit between $10K and $500K
+          const profit = `$${Math.floor(Math.random() * 490 + 10)}K`;
+          // Generate random token from a list
+          const tokens = ["SOL"];
+          const token = tokens[Math.floor(Math.random() * tokens.length)];
+          // Generate random strategy from a list
+          const strategies = ["Copy traders farming"];
+          const strategy =
+            strategies[Math.floor(Math.random() * strategies.length)];
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${fugitive.name}</td>
+            <td>${profit}</td>
+            <td>${token}</td>
+            <td>${strategy}</td>
+            <td><button class="btn btn-yellow trader-details" data-username="${
+              fugitive.name
+            }">Details</button></td>
+        `;
+          leaderboard.appendChild(row);
+        });
+
+        // Whales
+        whales.forEach((whale, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${whale.username}</td>
+            <td>${whale.assets}</td>
+            <td>${whale.influence}</td>
+            <td>${whale.lastTrade}</td>
+        `;
+          whalesTable.appendChild(row);
+        });
+
+        // Newbies
+        newbies.forEach((newbie, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${newbie.username}</td>
+            <td>${newbie.profit}</td>
+            <td>${newbie.successRate}</td>
+            <td>${newbie.style}</td>
+        `;
+          newbiesTable.appendChild(row);
+        });
+
+        // Rekt list
+        rektList.forEach((rekt, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${rekt.username}</td>
+            <td>${rekt.losses}</td>
+            <td>${rekt.reason}</td>
+            <td>${rekt.lesson}</td>
+        `;
+          rektTable.appendChild(row);
+        });
+
+        // News
+        renderNews();
+
+        // Add locked class to market and research tabs in navigation
+        document
+          .querySelector('.nav-link[data-tab="market"]')
+          .classList.add("locked");
+        document
+          .querySelector('.nav-link[data-tab="research"]')
+          .classList.add("locked");
+      }
+
+      // Also update the trader details modal to use fugitives data
+      document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("trader-details")) {
+          const username = e.target.getAttribute("data-username");
+          const fugitive = fugitives.find((f) => f.name === username);
+
+          if (fugitive) {
+            document.getElementById("modal-trader-name").textContent =
+              fugitive.name;
+
+            // Generate random stats
+            const profit = `$${Math.floor(Math.random() * 490 + 10)}K`;
+            const winRate = `${Math.floor(Math.random() * 50 + 30)}%`;
+            const drawdown = `${Math.floor(Math.random() * 50 + 10)}%`;
+
+            document.getElementById("modal-total-profit").textContent = profit;
+            document.getElementById("modal-win-rate").textContent = winRate;
+            document.getElementById("modal-drawdown").textContent = drawdown;
+
+            // Generate random trading style
+            const styles = [
+              "Aggressive trader, loves high leverage",
+              "Conservative investor, prefers long-term positions",
+              "Scalper, makes hundreds of trades per day",
+              "Memes trader, specializes in memecoins",
+              "Arbitrageur, looks for price differences between exchanges",
+            ];
+            document.getElementById("modal-trading-style").textContent =
+              styles[Math.floor(Math.random() * styles.length)];
+
+            // Generate random trades
+            const tokens = [
+              "BTC",
+              "ETH",
+              "SOL",
+              "DOGE",
+              "PEPE",
+              "SHIB",
+              "XRP",
+              "ADA",
+            ];
+            const directions = ["LONG", "SHORT", "HOLD"];
+            const tradesTable = document.getElementById("modal-trades");
+            tradesTable.innerHTML = "";
+
+            for (let i = 0; i < 5; i++) {
+              const date = `2025-04-${Math.floor(Math.random() * 13 + 1)}`;
+              const token = tokens[Math.floor(Math.random() * tokens.length)];
+              const direction =
+                directions[Math.floor(Math.random() * directions.length)];
+              const result = `${Math.random() > 0.5 ? "+" : "-"}${(
+                Math.random() * 20 +
+                1
+              ).toFixed(1)}%`;
+
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                    <td>${date}</td>
+                    <td>${token}</td>
+                    <td>${direction}</td>
+                    <td class="${
+                      result.startsWith("+")
+                        ? "price-up"
+                        : result.startsWith("-")
+                        ? "price-down"
+                        : "price-neutral"
+                    }">${result}</td>
+                `;
+              tradesTable.appendChild(row);
+            }
+
+            // Generate favorite tokens (2-3 random tokens)
+            const favTokens = document.getElementById("modal-favorite-tokens");
+            favTokens.innerHTML = "";
+            const numFavTokens = Math.floor(Math.random() * 2) + 2;
+            const shuffledTokens = [...tokens].sort(() => 0.5 - Math.random());
+
+            for (let i = 0; i < numFavTokens; i++) {
+              const span = document.createElement("span");
+              span.style =
+                "display: inline-block; background: #f0f7ff; padding: 5px 10px; border-radius: 20px; margin-right: 5px; margin-bottom: 5px;";
+              span.textContent = shuffledTokens[i];
+              favTokens.appendChild(span);
+            }
+
+            traderModal.style.display = "flex";
+          }
+        }
+      });
+
+      function renderNews() {
+        newsArticles.forEach((article) => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+          <div class="news-item">
+            <a class="news-item-link" href="${article.url}" target="_blank">
+              <span class="news-item-title">${article.title}</span>
+              <span class="news-item-source">${article.source} • ${article.date}</span>
+            </a>
+          </div>
+        `;
+          newsList.appendChild(li);
+        });
+      }
+
+      // Navigation
+      navLinks.forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const tabId = link.getAttribute("data-tab");
+
+          // Check if tab is locked
+          if (link.classList.contains("locked")) {
+            unlockModal.style.display = "flex";
+            return;
+          }
+
+          navLinks.forEach((navLink) => navLink.classList.remove("active"));
+          link.classList.add("active");
+
+          tabContents.forEach((content) => content.classList.remove("active"));
+          document.getElementById(tabId).classList.add("active");
+        });
+      });
+
+      // Tabs
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const tabId = tab.getAttribute("data-tab");
+
+          tabs.forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+
+          tabContents.forEach((content) => content.classList.remove("active"));
+          document.getElementById(tabId).classList.add("active");
+        });
+      });
+
+      // Wallet modal
+      connectWalletBtn.addEventListener("click", () => {
+        walletModal.style.display = "flex";
+      });
+
+      // Unlock buttons
+      unlockMarketBtn.addEventListener("click", () => {
+        unlockModal.style.display = "flex";
+      });
+
+      unlockResearchBtn.addEventListener("click", () => {
+        unlockModal.style.display = "flex";
+      });
+
+      connectToUnlockBtn.addEventListener("click", () => {
+        walletModal.style.display = "flex";
+        unlockModal.style.display = "none";
+      });
+
+      // Close modals
+      closeModals.forEach((closeBtn) => {
+        closeBtn.addEventListener("click", () => {
+          traderModal.style.display = "none";
+          walletModal.style.display = "none";
+          unlockModal.style.display = "none";
+        });
+      });
+
+      // Close modal when clicking outside
+      window.addEventListener("click", (e) => {
+        if (e.target === traderModal) {
+          traderModal.style.display = "none";
+        }
+        if (e.target === walletModal) {
+          walletModal.style.display = "none";
+        }
+        if (e.target === unlockModal) {
+          unlockModal.style.display = "none";
+        }
+      });
+
+      // Load more news
+      loadMoreNewsBtn.addEventListener("click", () => {
+        // In a real app, this would load more news from an API
+        const moreNews = [
+          {
+            title: "Anonymous trader made $10M on new memecoin",
+            url: "#",
+            source: "CryptoGains",
+            date: "Apr 10, 2025",
+          },
+          {
+            title: "Crypto market corrects after recent rally",
+            url: "#",
+            source: "MarketWatch",
+            date: "Apr 10, 2025",
+          },
+          {
+            title: "New DeFi protocol offers 1000% APY - too good to be true?",
+            url: "#",
+            source: "DeFi Watch",
+            date: "Apr 9, 2025",
+          },
+        ];
+
+        moreNews.forEach((article) => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+          <div class="news-item">
+            <a class="news-item-link" href="${article.url}" target="_blank">
+              <span class="news-item-title">${article.title}</span>
+              <span class="news-item-source">${article.source} • ${article.date}</span>
+            </a>
+          </div>
+        `;
+          newsList.appendChild(li);
+        });
+
+        loadMoreNewsBtn.textContent = "News loaded";
+        loadMoreNewsBtn.disabled = true;
+      });
+
+      // Initialize the page
+      initData();
+
+      // Simulate live updates
+      setInterval(() => {
+        // Randomly update some trader profits
+        const randomTraderIndex = Math.floor(Math.random() * fugitives.length);
+        const profitCells = document.querySelectorAll(
+          "#leaderboard-data td:nth-child(3)"
+        );
+        if (profitCells[randomTraderIndex]) {
+          const randomChange = (Math.random() * 10 - 5).toFixed(2);
+          const currentProfit = parseFloat(
+            profitCells[randomTraderIndex].textContent.replace(/[^0-9.]/g, "")
+          );
+          const newProfit = currentProfit + parseFloat(randomChange) * 1000;
+          profitCells[randomTraderIndex].textContent = `$${(
+            newProfit / 1000
+          ).toFixed(2)}K`;
+          profitCells[randomTraderIndex].classList.add("price-up");
+          setTimeout(() => {
+            profitCells[randomTraderIndex].classList.remove("price-up");
+          }, 1000);
+        }
+      }, 3000);
+    </script>
+  
+
+</body></html>
